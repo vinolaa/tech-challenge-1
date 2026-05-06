@@ -1,0 +1,48 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: tc1-postgres
+    environment:
+      POSTGRES_DB: tc1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tc1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tc1-network
+
+  app:
+    build:
+      context: .
+      target: runtime
+    container_name: tc1-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:jdbc:postgresql://tc1-postgres:5432/tc1}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:postgres}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:postgres}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      SPRING_FLYWAY_ENABLED: ${SPRING_FLYWAY_ENABLED:true}
+      JWT_SECRET: ${JWT_SECRET:"RiU72a2gVE6ijWmVl6ySe5nb6uy1tHTnESgvWmYsX2I="}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:3600000}
+    ports:
+      - "8080:8080"
+    networks:
+      - tc1-network
+
+volumes:
+  postgres_data:
+
+networks:
+  tc1-network:
+    driver: bridge

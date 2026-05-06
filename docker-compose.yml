@@ -28,13 +28,13 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:jdbc:postgresql://tc1-postgres:5432/tc1}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:postgres}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:postgres}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
-      SPRING_FLYWAY_ENABLED: ${SPRING_FLYWAY_ENABLED:true}
-      JWT_SECRET: ${JWT_SECRET:"RiU72a2gVE6ijWmVl6ySe5nb6uy1tHTnESgvWmYsX2I="}
-      JWT_EXPIRATION: ${JWT_EXPIRATION:3600000}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tc1-postgres:5432/tc1
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_FLYWAY_ENABLED=true
+      - JWT_SECRET=RiU72a2gVE6ijWmVl6ySe5nb6uy1tHTnESgvWmYsX2I=
+      - JWT_EXPIRATION=3600000
     ports:
       - "8080:8080"
     networks:
